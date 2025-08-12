@@ -2,14 +2,16 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
-	"net/url"
+	"io"
 	"os"
+	"os/user"
 )
 
 type Config struct {
-	dbURL           url.URL
-	currentUserName string
+	DBURL           string `json:"db_url"`
+	CurrentUserName string `json:"current_user_name"`
 }
 
 const configFileName = ".gatorconfig.json"
@@ -19,12 +21,31 @@ func Read() (Config, error) {
 	if err != nil {
 		return Config{}, nil
 	}
-	fmt.Println(configFilePath)
-	return Config{}, nil
+	file, err := os.Open(configFilePath)
+	if err != nil {
+		return Config{}, nil
+	}
+
+	defer file.Close()
+
+	bytes, err := io.ReadAll(file)
+	if err != nil {
+		return Config{}, nil
+	}
+	var config Config
+	if err := json.Unmarshal(bytes, &config); err != nil {
+		return Config{}, nil
+	}
+	return config, nil
 }
 
-func (*Config) SetUser() {
-	fmt.Println("Function config.SetUser() is not yet implemented")
+func (*Config) SetUser() error {
+	user, err := user.Current()
+	if err != nil {
+		return err
+	}
+	fmt.Println(user.Username)
+	return nil
 }
 
 func getConfigFilePath() (string, error) {

@@ -11,5 +11,9 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	fmt.Println("Config test", config)
+	if err := config.SetUser(); err != nil {
+		fmt.Println(err)
+	}
 }
