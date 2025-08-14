@@ -7,13 +7,18 @@ import (
 )
 
 func main() {
-	config, err := config.Read()
+	configFile, err := config.Read()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Config test", config)
-	if err := config.SetUser(); err != nil {
+	if err := configFile.SetUser(); err != nil {
 		fmt.Println(err)
 	}
+	configFile, err = config.Read()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(configFile.DBURL, configFile.CurrentUserName)
 }

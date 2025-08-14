@@ -3,7 +3,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"os/user"
@@ -39,12 +38,15 @@ func Read() (Config, error) {
 	return config, nil
 }
 
-func (*Config) SetUser() error {
+func (c *Config) SetUser() error {
 	user, err := user.Current()
 	if err != nil {
 		return err
 	}
-	fmt.Println(user.Username)
+	c.CurrentUserName = user.Username
+	if err := write(*c); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -57,6 +59,27 @@ func getConfigFilePath() (string, error) {
 }
 
 func write(cfg Config) error {
-	fmt.Println("Function write is not yet implemented")
+	bytes, err := json.Marshal(cfg)
+	if err != nil {
+		return err
+	}
+
+	configFilePath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Open(configFilePath)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	err = os.WriteFile(configFilePath, bytes, 0644)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
