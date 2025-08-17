@@ -26,5 +26,7 @@ func main() {
 		arguments: args[2:],
 	}
 	err = gatorCmds.run(&gatorState, command)
-	fmt.Println(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
