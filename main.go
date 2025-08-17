@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/marekbrze/gator/internal/config"
 )
@@ -11,14 +13,18 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	gatorState := state{config: &configFile}
 
-	if err := configFile.SetUser(); err != nil {
-		fmt.Println(err)
+	gatorCmds := commands{make(map[string]func(*state, command) error)}
+	gatorCmds.register("login", loginHandler)
+	args := os.Args
+	if len(args) <= 1 {
+		log.Fatal("you need to provide arguments to the gator program")
 	}
-	configFile, err = config.Read()
-	if err != nil {
-		fmt.Println(err)
+	command := command{
+		name:      args[1],
+		arguments: args[2:],
 	}
-
-	fmt.Println(configFile.DBURL, configFile.CurrentUserName)
+	err = gatorCmds.run(&gatorState, command)
+	fmt.Println(err)
 }

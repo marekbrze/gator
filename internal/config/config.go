@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"os/user"
 )
 
 type Config struct {
@@ -38,12 +37,8 @@ func Read() (Config, error) {
 	return config, nil
 }
 
-func (c *Config) SetUser() error {
-	user, err := user.Current()
-	if err != nil {
-		return err
-	}
-	c.CurrentUserName = user.Username
+func (c *Config) SetUser(username string) error {
+	c.CurrentUserName = username
 	if err := write(*c); err != nil {
 		return err
 	}
