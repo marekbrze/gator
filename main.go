@@ -1,11 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/marekbrze/gator/internal/config"
+	"github.com/marekbrze/gator/internal/database"
 )
 
 func main() {
@@ -13,8 +16,14 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	gatorState := state{config: &configFile}
 
+	db, err := sql.Open("postgres", configFile.DBURL)
+	if err != nil {
+		log.Fatal("Couldn't connect to the database")
+	}
+	dbQueries := database.New(db)
+
+	gatorState := state{config: &configFile, db: dbQueries}
 	gatorCmds := commands{make(map[string]func(*state, command) error)}
 	gatorCmds.register("login", loginHandler)
 	args := os.Args
