@@ -26,3 +26,13 @@ func (c *commands) run(s *state, cmd command) error {
 func (c *commands) register(name string, f func(*state, command) error) {
 	c.list[name] = f
 }
+
+func checkArguments(cmd command, limit int) error {
+	if len(cmd.arguments) < limit {
+		return fmt.Errorf("this command requires %d arguments", limit)
+	}
+	if len(cmd.arguments) > limit {
+		return fmt.Errorf("too many arguments. this command requires %d arguments", limit)
+	}
+	return nil
+}

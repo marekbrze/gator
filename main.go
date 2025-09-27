@@ -26,6 +26,9 @@ func main() {
 	gatorState := state{config: &configFile, db: dbQueries}
 	gatorCmds := commands{make(map[string]func(*state, command) error)}
 	gatorCmds.register("login", loginHandler)
+	gatorCmds.register("register", registerHandler)
+	gatorCmds.register("users", usersHandler)
+	gatorCmds.register("reset", resetHandler)
 	args := os.Args
 	if len(args) <= 1 {
 		log.Fatal("you need to provide arguments to the gator program")

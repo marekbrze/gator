@@ -1,18 +1,28 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"log"
+)
 
 func loginHandler(s *state, cmd command) error {
-	if len(cmd.arguments) == 0 {
-		return fmt.Errorf("loginHandler functions requires username argument")
+	err := checkArguments(cmd, 1)
+	if err != nil {
+		return err
 	}
-	if len(cmd.arguments) > 1 {
-		return fmt.Errorf("too many arguments. Login function requires only 1 argument: username")
+	user, err := s.db.GetUser(context.Background(), cmd.arguments[0])
+	if err == sql.ErrNoRows {
+		log.Fatal("User doesn't exist")
 	}
-	err := s.config.SetUser(cmd.arguments[0])
+	if err != nil {
+		return fmt.Errorf("failed to check if user exists: %w", err)
+	}
+	err = s.config.SetUser(user.Name)
 	if err != nil {
 		return fmt.Errorf("error when setting the user in config. Details: %v", err)
 	}
-	fmt.Println("user has been set. Username:", cmd.arguments[0])
+	fmt.Println("user has been set. Username:", s.config.CurrentUserName)
 	return nil
 }
