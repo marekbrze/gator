@@ -29,10 +29,10 @@ func (c *commands) register(name string, f func(*state, command) error) {
 
 func checkArguments(cmd command, limit int) error {
 	if len(cmd.arguments) < limit {
-		return fmt.Errorf("this command requires %d arguments", limit)
+		return fmt.Errorf("number of required arguments: %d", limit)
 	}
 	if len(cmd.arguments) > limit {
-		return fmt.Errorf("too many arguments. this command requires %d arguments", limit)
+		return fmt.Errorf("too many arguments. Number of required arguments: %d", limit)
 	}
 	return nil
 }
