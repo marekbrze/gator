@@ -78,13 +78,8 @@ func unescapeHTML(rssFeed *RSSFeed) {
 	}
 }
 
-func addFeedHandler(s *state, cmd command) error {
+func addFeedHandler(s *state, cmd command, user database.User) error {
 	err := checkArguments(cmd, 2)
-	if err != nil {
-		return err
-	}
-	currentUser := s.config.CurrentUserName
-	currentUserInfo, err := s.db.GetUser(context.Background(), currentUser)
 	if err != nil {
 		return err
 	}
@@ -94,9 +89,20 @@ func addFeedHandler(s *state, cmd command) error {
 		UpdatedAt: time.Now(),
 		Name:      cmd.arguments[0],
 		Url:       cmd.arguments[1],
-		UserID:    currentUserInfo.ID,
+		UserID:    user.ID,
 	}
 	newFeed, err := s.db.CreateFeed(context.Background(), newFeedDetails)
+	if err != nil {
+		return err
+	}
+	feedFollowParams := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    user.ID,
+		FeedID:    newFeed.ID,
+	}
+	_, err = s.db.CreateFeedFollow(context.Background(), feedFollowParams)
 	if err != nil {
 		return err
 	}

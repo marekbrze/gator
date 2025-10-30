@@ -25,12 +25,19 @@ func main() {
 
 	gatorState := state{config: &configFile, db: dbQueries}
 	gatorCmds := commands{make(map[string]func(*state, command) error)}
+	// Users commands
 	gatorCmds.register("login", loginHandler)
 	gatorCmds.register("register", registerHandler)
 	gatorCmds.register("users", usersHandler)
+	// Feeds commands
 	gatorCmds.register("agg", aggHandler)
 	gatorCmds.register("feeds", feedsHandler)
-	gatorCmds.register("addfeed", addFeedHandler)
+	gatorCmds.register("addfeed", middlewareLoggedIn(addFeedHandler))
+	// Follow commands
+	gatorCmds.register("follow", middlewareLoggedIn(followHandler))
+	gatorCmds.register("following", middlewareLoggedIn(followingHandler))
+	gatorCmds.register("unfollow", middlewareLoggedIn(unfollowHandler))
+	// Reset
 	gatorCmds.register("reset", resetHandler)
 	args := os.Args
 	if len(args) <= 1 {
