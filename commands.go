@@ -31,6 +31,7 @@ func checkArguments(cmd command, limit int) error {
 	if len(cmd.arguments) < limit {
 		return fmt.Errorf("number of required arguments: %d", limit)
 	}
+
 	if len(cmd.arguments) > limit {
 		return fmt.Errorf("too many arguments. Number of required arguments: %d", limit)
 	}

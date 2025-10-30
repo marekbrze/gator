@@ -6,10 +6,9 @@ CREATE TABLE feeds (
     name TEXT NOT NULL,
     url TEXT NOT NULL UNIQUE,
     user_id UUID NOT NULL,
-    CONSTRAINT fk_feeds_users
-    FOREIGN KEY (user_id)
-    REFERENCES users (id)
-    ON DELETE CASCADE
+    CONSTRAINT fk_feeds_users FOREIGN KEY (user_id) REFERENCES users (
+        id
+    ) ON DELETE CASCADE
 );
 
 -- +goose Down

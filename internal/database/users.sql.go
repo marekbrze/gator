@@ -19,8 +19,7 @@ VALUES (
     $2,
     $3,
     $4
-)
-RETURNING id, created_at, updated_at, name
+) RETURNING id, created_at, updated_at, name
 `
 
 type CreateUserParams struct {
@@ -48,7 +47,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, created_at, updated_at, name FROM users WHERE name = $1
+SELECT id, created_at, updated_at, name FROM users
+WHERE name = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, name string) (User, error) {
@@ -105,7 +105,10 @@ func (q *Queries) ResetUsers(ctx context.Context) error {
 }
 
 const userExists = `-- name: UserExists :one
-SELECT EXISTS(SELECT 1 FROM users WHERE name = $1)
+SELECT EXISTS(
+    SELECT 1 FROM users
+    WHERE name = $1
+)
 `
 
 func (q *Queries) UserExists(ctx context.Context, name string) (bool, error) {
