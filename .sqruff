@@ -4,5 +4,5 @@ rules = all
 exclude_rules = LT08,AM04
 
 [sqlfluff:rules:layout.newlines]
-maximum_empty_lines_between_statements = 2
+maximum_empty_lines_between_statements = 1
 maximum_empty_lines_inside_statements = 0
