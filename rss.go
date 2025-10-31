@@ -30,16 +30,22 @@ type RSSItem struct {
 }
 
 func aggHandler(s *state, cmd command) error {
-	err := checkArguments(cmd, 0)
+	err := checkArguments(cmd, 1)
 	if err != nil {
 		return err
 	}
-	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	duration := cmd.arguments[0]
+	timeBetweenReqs, err := time.ParseDuration(duration)
 	if err != nil {
 		return err
 	}
-	fmt.Println(feed)
-	return nil
+	fmt.Printf("Collecting feeds every %s\n", timeBetweenReqs)
+	ticker := time.NewTicker(timeBetweenReqs)
+	for ; ; <-ticker.C {
+		if err := scrapeFeeds(s); err != nil {
+			return err
+		}
+	}
 }
 
 func fetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
