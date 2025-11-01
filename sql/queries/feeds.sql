@@ -19,7 +19,6 @@ FROM
     feeds
 INNER JOIN users ON feeds.user_id = users.id;
 
-
 -- name: CreateFeedFollow :one
 WITH inserted_feed_follow AS (
     INSERT INTO
@@ -37,7 +36,6 @@ FROM
     inserted_feed_follow
 INNER JOIN feeds ON inserted_feed_follow.feed_id = feeds.id
 INNER JOIN users ON inserted_feed_follow.user_id = users.id;
-
 
 -- name: GetFeedFollowsForUser :many
 SELECT

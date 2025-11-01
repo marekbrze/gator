@@ -6,7 +6,7 @@ import (
 )
 
 func resetHandler(s *state, cmd command) error {
-	err := checkArguments(cmd, 0)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 0, max: 1})
 	if err != nil {
 		return err
 	}

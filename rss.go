@@ -30,7 +30,7 @@ type RSSItem struct {
 }
 
 func aggHandler(s *state, cmd command) error {
-	err := checkArguments(cmd, 1)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 1, max: 1})
 	if err != nil {
 		return err
 	}
@@ -85,14 +85,14 @@ func unescapeHTML(rssFeed *RSSFeed) {
 }
 
 func addFeedHandler(s *state, cmd command, user database.User) error {
-	err := checkArguments(cmd, 2)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 2, max: 2})
 	if err != nil {
 		return err
 	}
 	newFeedDetails := database.CreateFeedParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		Name:      cmd.arguments[0],
 		Url:       cmd.arguments[1],
 		UserID:    user.ID,
@@ -103,8 +103,8 @@ func addFeedHandler(s *state, cmd command, user database.User) error {
 	}
 	feedFollowParams := database.CreateFeedFollowParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		UserID:    user.ID,
 		FeedID:    newFeed.ID,
 	}
@@ -117,7 +117,7 @@ func addFeedHandler(s *state, cmd command, user database.User) error {
 }
 
 func feedsHandler(s *state, cmd command) error {
-	err := checkArguments(cmd, 0)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 0, max: 0})
 	if err != nil {
 		return err
 	}

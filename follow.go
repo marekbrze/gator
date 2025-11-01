@@ -10,7 +10,7 @@ import (
 )
 
 func followHandler(s *state, cmd command, user database.User) error {
-	err := checkArguments(cmd, 1)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 1, max: 1})
 	if err != nil {
 		return err
 	}
@@ -21,8 +21,8 @@ func followHandler(s *state, cmd command, user database.User) error {
 	}
 	feedFollowParams := database.CreateFeedFollowParams{
 		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		UserID:    user.ID,
 		FeedID:    feedID,
 	}
@@ -35,7 +35,7 @@ func followHandler(s *state, cmd command, user database.User) error {
 }
 
 func followingHandler(s *state, cmd command, user database.User) error {
-	err := checkArguments(cmd, 0)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 0, max: 0})
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func followingHandler(s *state, cmd command, user database.User) error {
 }
 
 func unfollowHandler(s *state, cmd command, user database.User) error {
-	err := checkArguments(cmd, 1)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 1, max: 1})
 	if err != nil {
 		return err
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 func registerHandler(s *state, cmd command) error {
-	err := checkArguments(cmd, 1)
+	err := checkArguments(cmd, CheckArgumentsOptions{min: 1, max: 1})
 	if err != nil {
 		return err
 	}

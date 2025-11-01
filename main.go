@@ -31,6 +31,7 @@ func main() {
 	gatorCmds.register("users", usersHandler)
 	// Feeds commands
 	gatorCmds.register("agg", aggHandler)
+	gatorCmds.register("browse", middlewareLoggedIn(browseHandler))
 	gatorCmds.register("feeds", feedsHandler)
 	gatorCmds.register("addfeed", middlewareLoggedIn(addFeedHandler))
 	// Follow commands

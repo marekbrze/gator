@@ -27,13 +27,18 @@ func (c *commands) register(name string, f func(*state, command) error) {
 	c.list[name] = f
 }
 
-func checkArguments(cmd command, limit int) error {
-	if len(cmd.arguments) < limit {
-		return fmt.Errorf("number of required arguments: %d", limit)
+type CheckArgumentsOptions struct {
+	min int
+	max int
+}
+
+func checkArguments(cmd command, options CheckArgumentsOptions) error {
+	if len(cmd.arguments) < options.min {
+		return fmt.Errorf("number of required arguments is lower then minimal required: %d", options.min)
 	}
 
-	if len(cmd.arguments) > limit {
-		return fmt.Errorf("too many arguments. Number of required arguments: %d", limit)
+	if len(cmd.arguments) > options.max {
+		return fmt.Errorf("too many arguments. Number of required arguments: %d", options.max)
 	}
 	return nil
 }
